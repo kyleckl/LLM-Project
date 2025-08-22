@@ -4,10 +4,16 @@ import (
 	"context"
 	"llmApp/internal/managers/httpManager"
 	"net/http"
+	"testing"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
+
+func TestAdapters(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "")
+}
 
 var _ = Describe("HTTPClient", func() {
 	// Instantiate the client and a context for requests
