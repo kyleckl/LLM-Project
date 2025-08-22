@@ -1,4 +1,4 @@
-package modules
+package httpManager
 
 import (
 	"bytes"

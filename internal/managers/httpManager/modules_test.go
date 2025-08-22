@@ -1,4 +1,4 @@
-package modules_test
+package httpManager_test
 
 import (
 	"testing"
