@@ -17,7 +17,10 @@ lint:
 	# golangci-lint run
 
 unit-test:
+	@if [ -z "$$GOOGLE_API_KEY" ]; then \
+		echo "Error: GOOGLE_API_KEY is not set. Google LLM testing will be skipped"; \
+	fi
 	ginkgo ./...
-	
+
 clean:
 	rm -rf bin/
