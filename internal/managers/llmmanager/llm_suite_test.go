@@ -2,7 +2,9 @@ package llmmanager_test
 
 import (
 	"context"
+	"fmt"
 	"llmApp/internal/managers/llmmanager"
+	"os"
 	"testing"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -43,6 +45,29 @@ var _ = Describe("HTTPClient", func() {
 			outputString, err := llm.StreamResponse(ctx, resp)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(outputString).ToNot(BeEmpty())
+		})
+	})
+
+	FWhen("The desired LLM is hosted on Google", func() {
+		GoogleAPIKey := os.Getenv("GOOGLE_API_KEY")
+
+		BeforeEach(func() {
+			if GoogleAPIKey == "" {
+				Skip("missing google api key, skipping tests that require it")
+			}
+		})
+
+		llm, _ := llmmanager.NewGoogleAIManager("gemma-3-27b-it", GoogleAPIKey)
+
+		It("Should be able to send and receive a response from the LLM", func() {
+			prompt := "Hello World!"
+			promptAdapter := llm.ConstructPrompt(prompt)
+
+			outputString, err := llm.SendQuery(ctx, promptAdapter)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(outputString).ToNot(BeEmpty())
+
+			fmt.Print(outputString)
 		})
 	})
 })

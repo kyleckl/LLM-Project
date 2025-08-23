@@ -1,4 +1,4 @@
-.PHONY: all build run format lint clean
+.PHONY: all build run format unit-test lint clean
 
 all: build
 
@@ -16,5 +16,8 @@ lint:
 	# Add any other linting tools here, e.g., golangci-lint
 	# golangci-lint run
 
+unit-test:
+	ginkgo ./...
+	
 clean:
 	rm -rf bin/
