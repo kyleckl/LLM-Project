@@ -13,8 +13,7 @@ format:
 
 lint:
 	go vet ./...
-	# Add any other linting tools here, e.g., golangci-lint
-	# golangci-lint run
+	golangci-lint run ./... -v
 
 unit-test:
 	@if [ -z "$$GOOGLE_API_KEY" ]; then \
