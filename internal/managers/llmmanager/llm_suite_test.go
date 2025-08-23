@@ -48,7 +48,7 @@ var _ = Describe("HTTPClient", func() {
 		})
 	})
 
-	FWhen("The desired LLM is hosted on Google", func() {
+	When("The desired LLM is hosted on Google", func() {
 		GoogleAPIKey := os.Getenv("GOOGLE_API_KEY")
 
 		BeforeEach(func() {
