@@ -2,19 +2,14 @@ package llmmanager
 
 import (
 	"context"
-	"llmApp/internal/errors"
 
 	"google.golang.org/genai"
 )
 
 type GoogleAIManager struct {
-	model  string
-	client *genai.Client
-}
-
-type GooglePromptAdapter struct {
-	prompt []*genai.Content
-	model  string
+	model   string
+	client  *genai.Client
+	content []*genai.Content
 }
 
 func NewGoogleAIManager(model string, apiKey string) (*GoogleAIManager, error) {
@@ -34,21 +29,14 @@ func NewGoogleAIManager(model string, apiKey string) (*GoogleAIManager, error) {
 	}, nil
 }
 
-func (g *GoogleAIManager) ConstructPrompt(userInput string) any {
+func (g *GoogleAIManager) ConstructPrompt(userInput string) error {
 	prompt := genai.Text(userInput)
-	return GooglePromptAdapter{
-		prompt: prompt,
-		model:  g.model,
-	}
+	g.content = prompt
+	return nil
 }
 
-func (g *GoogleAIManager) SendQuery(ctx context.Context, prompt any) (string, error) {
-	googlePrompt, ok := prompt.(GooglePromptAdapter)
-	if !ok {
-		return "", errors.ErrTypeAssertionFailed
-	}
-
-	resp, err := g.client.Models.GenerateContent(ctx, googlePrompt.model, googlePrompt.prompt, nil)
+func (g *GoogleAIManager) SendQuery(ctx context.Context) (string, error) {
+	resp, err := g.client.Models.GenerateContent(ctx, g.model, g.content, nil)
 	if err != nil {
 		return "", err
 	}

@@ -11,7 +11,8 @@ import (
 
 type LlamaManager struct {
 	httpClient *httpManager.HTTPClient
-	Model      string
+	model      string
+	content    LlamaPromptAdapter
 }
 
 type LlamaPromptAdapter struct {
@@ -34,23 +35,25 @@ func NewLlamaClient(model string) *LlamaManager {
 
 	return &LlamaManager{
 		httpClient: httpManager.NewHTTPClient(baseURL),
-		Model:      model,
+		model:      model,
 	}
 }
 
-func (l *LlamaManager) ConstructPrompt(userInput string, stream bool) any {
-	return LlamaPromptAdapter{
+func (l *LlamaManager) ConstructPrompt(userInput string) error {
+	l.content = LlamaPromptAdapter{
 		Prompt: userInput,
-		Model:  l.Model,
-		Stream: stream,
+		Model:  l.model,
+		Stream: true,
 	}
+
+	return nil
 }
 
-func (l *LlamaManager) SendQuery(ctx context.Context, prompt any) (*http.Response, error) {
+func (l *LlamaManager) SendQuery(ctx context.Context) (*http.Response, error) {
 	// Depending on the model, the API endpoint may differ
 	path := "/api/generate"
 
-	resp, err := l.httpClient.Post(ctx, path, prompt)
+	resp, err := l.httpClient.Post(ctx, path, l.content)
 	if err != nil {
 		return nil, err
 	}

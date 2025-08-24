@@ -26,19 +26,20 @@ var _ = Describe("HTTPClient", func() {
 			// Create a prompt, enabling streaming responses
 			// Stream is set to true because we don't want to wait for the entire response
 			prompt := "What is the meaning of life?"
-			promptAdapter := llm.ConstructPrompt(prompt, true)
-			llamaPromptAdapter := promptAdapter.(llmmanager.LlamaPromptAdapter)
+			err := llm.ConstructPrompt(prompt)
+			Expect(err).ToNot(HaveOccurred())
 
-			resp, err := llm.SendQuery(ctx, llamaPromptAdapter)
+			resp, err := llm.SendQuery(ctx)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(200))
 		})
 
 		It("Should be able to stream a response from the LLM", func() {
 			prompt := "Why is the meaning of life 42?"
-			promptAdapter := llm.ConstructPrompt(prompt, true)
+			err := llm.ConstructPrompt(prompt)
+			Expect(err).ToNot(HaveOccurred())
 
-			resp, err := llm.SendQuery(ctx, promptAdapter)
+			resp, err := llm.SendQuery(ctx)
 			Expect(err).ToNot(HaveOccurred())
 
 			// Use the response body as a parameter to stream the response
@@ -60,10 +61,11 @@ var _ = Describe("HTTPClient", func() {
 		llm, _ := llmmanager.NewGoogleAIManager("gemma-3-27b-it", GoogleAPIKey)
 
 		It("Should be able to send and receive a response from the LLM", func() {
-			prompt := "Hello World!"
-			promptAdapter := llm.ConstructPrompt(prompt)
+			prompt := "How do airplanes fly?"
+			err := llm.ConstructPrompt(prompt)
+			Expect(err).ToNot(HaveOccurred())
 
-			outputString, err := llm.SendQuery(ctx, promptAdapter)
+			outputString, err := llm.SendQuery(ctx)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(outputString).ToNot(BeEmpty())
 
